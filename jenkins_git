@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    parameters {
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'MYBRANCH', type: 'PT_BRANCH'
+    }
+    stages {
+        stage('拉取代码') {
+            steps {
+                git branch: "${params.MYBRANCH}", url: 'http://10.10.10.31/java-g1/workspace.git',credentialsId: '1'       
+        }
+        
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                http://10.10.10.31/java-g1/workspace.git
+                sh "mvn  clean test"
+
+                // To run Maven on a Windows agent, use
+
+
+            post {
+                success
+                    archiveArtifacts 'test_success'
+                    sh 'echo "完成！！！！！！！！！！！ "'
+                }
+            }
+        }
+    }
+}
