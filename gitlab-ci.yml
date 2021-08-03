@@ -1,0 +1,36 @@
+default:
+  before_script:
+    - |
+      echo "pull nbpm's workspace"
+  tags:
+    - nbpm
+
+linux_job:
+  when: manual
+  allow_failure: false
+  script:
+    - echo "测试linux runner"
+  tags:
+    - linux_test
+  after_script:
+    - | 
+      echo "code to "$dir" end"
+  except:
+    - master
+    
+
+
+win_job1:
+  variables:
+    dir: "D:\\BPM4.4\\WeiOA365\\bin\\obpm-demo\\workspace"
+    project_addr: "git@10.10.10.31:java-g1/workspace.git"
+  
+  when: manual
+  allow_failure: false
+  script:
+    - |
+      echo "pull new version"
+      echo "更新工作目录 "$dir" "
+      cd "$dir" ; git pull origin
+  only:
+    - master
