@@ -1,9 +1,9 @@
 default:
   before_script:
     - |
-      echo "pull nbpm's workspace"
+      echo "pull project's workspace"
   tags:
-    - nbpm
+    - project     #runner 注册的项目标签
 
 linux_job:
   when: manual
@@ -22,15 +22,22 @@ linux_job:
 
 win_job1:
   variables:
-    dir: "D:\\BPM4.4\\WeiOA365\\bin\\obpm-demo\\workspace"
+    dir: "D:\\project\\workspace"
     project_addr: "git@10.10.10.31:java-g1/workspace.git"
   
   when: manual
   allow_failure: false
-  script:
+  script:                                 # 这是在windows  powershell下运行的
     - |
-      echo "pull new version"
-      echo "更新工作目录 "$dir" "
-      cd "$dir" ; git pull origin
-  only:
+      cd $dir
+      if ($(git rev-parse --abbrev-ref HEAD) -eq "dev") {
+        echo "pull new version"
+        echo "update dir "$dir" "
+        git pull origin master
+      }
+      else {
+        echo "Current Branch is $(git rev-parse --abbrev-ref HEAD)"                # git rev-parse --abbrev-ref HEAD 获取git当前目录下分支名
+        echo "--------------- no update ---------------"
+      }
+   only:
     - master
