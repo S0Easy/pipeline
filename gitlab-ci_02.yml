@@ -1,0 +1,71 @@
+default:
+  before_script:
+    - |
+      echo "pull nbpm's workspace"
+      echo "****************$CI_COMMIT_TAG"
+      echo "****************$CI_COMMIT_BRANCH"
+      echo "****************$CI_COMMIT_REF_NAME"
+      echo "****************CI_SERVER_HOST: $CI_SERVER_HOST"
+      echo "****************CI_SERVER_NAME: $CI_SERVER_NAME"
+      echo "****************CI_SERVER: $CI_SERVER" 
+      echo "****************GITLAB_CI: $GITLAB_CI"
+      echo "****************GITLAB_FEATURES: $GITLAB_FEATURES"
+      echo "****************GITLAB_USER_ID: $GITLAB_USER_ID"
+      echo "****************GITLAB_USER_LOGIN: $GITLAB_USER_LOGIN"
+      echo "****************GITLAB_USER_NAME: $GITLAB_USER_NAME"
+  tags:
+    - nbpm
+
+stages:
+  - test
+  - prod            # 名称可自定义
+
+#linux_job:
+#  when: manual
+#  allow_failure: false
+#  script:
+#    - echo "测试linux runner"
+#  tags:
+#    - linux_test
+#  after_script:
+#    - | 
+#      echo "code to "$dir" end"
+#  except:
+#    - master
+    
+
+
+win_job1:
+  stage: test
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME == "master"
+
+  variables:
+    dir: "D:\\BPM4.4\\WeiOA365\\bin\\obpm-demo\\workspace"
+    project_addr: "git@10.10.10.31:java-g1/workspace.git"
+    cbrancher: "$(git rev-parse --abbrev-ref HEAD)"
+  
+  when: manual
+
+  allow_failure: false
+  script:
+    - |
+      if ($cbrancher -eq "dev") {
+        echo "pull new version"
+        echo "update brancher "$cbrancher" "
+
+      }
+      else {
+        echo "Current Branch is $(git rev-parse --abbrev-ref HEAD)"
+        echo "--------------- no update ---------------"
+      }
+  only:
+    refs:
+      - master
+    variables:
+      - $GITLAB_USER_LOGIN == "java"              #启动作业用户名是java时， 运行 win_job1: 
+  
+win_job2:
+  stage: prod
+  script:
+    - echo "**************prod**************"
