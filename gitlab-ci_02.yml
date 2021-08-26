@@ -1,7 +1,7 @@
 default:
   before_script:
     - |
-      echo "pull nbpm's workspace"
+      echo "pull your workspace"
       echo "****************$CI_COMMIT_TAG"
       echo "****************$CI_COMMIT_BRANCH"
       echo "****************$CI_COMMIT_REF_NAME"
@@ -41,13 +41,13 @@ win_job1:
 #    - if: $CI_COMMIT_REF_NAME == "master"
 
   variables:
-    dir: "D:\\BPM4.4\\WeiOA365\\bin\\obpm-demo\\workspace"
+    dir: "D:\\你的项目目录"
     project_addr: "git@10.10.10.31:java-g1/workspace.git"
-    cbrancher: "$(git rev-parse --abbrev-ref HEAD)"
+    cbrancher: "$(git rev-parse --abbrev-ref HEAD)"       # 获取本地分支名称
   
   when: manual
 
-  allow_failure: false
+  allow_failure: false                              # 失败之后管道不执行
   script:
     - |
       if ($cbrancher -eq "dev") {
@@ -59,9 +59,9 @@ win_job1:
         echo "Current Branch is $(git rev-parse --abbrev-ref HEAD)"
         echo "--------------- no update ---------------"
       }
-  only:
+  only:                                           #用户是java, 分支是master 管道执行
     refs:
-      - master
+      - master                                    # 只有当分支是master时， 作业执行
     variables:
       - $GITLAB_USER_LOGIN == "java"              #启动作业用户名是java时， 运行 win_job1: 
   
